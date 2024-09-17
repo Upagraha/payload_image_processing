@@ -1,0 +1,23 @@
+{
+  "exclude": [
+    "node_modules",
+    "src-tauri"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@nyxui/*": [
+        "./components/ui/*"
+      ],
+      "@/*": [
+        "./*"
+      ],
+      "@/components/*": [
+        "./app/components/*"
+      ],
+      "@/sections/*": [
+        "./app/sections/*"
+      ],
+    }
+  }
+}
