@@ -6,6 +6,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@shadcnui/*": [
+        "./app/components/ui/*"
+      ],
       "@nyxui/*": [
         "./components/ui/*"
       ],
@@ -18,6 +21,9 @@
       "@/sections/*": [
         "./app/sections/*"
       ],
+      "@/utils/*": [
+        "./app/util/*"
+      ]
     }
   }
 }
