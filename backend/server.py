@@ -3,6 +3,7 @@ from flask_cors import CORS
 import numpy as np
 import cv2
 from algorithms.edge_detection import edge_detection
+from algorithms.erosion_and_dilation import dilation, erosion
 from algorithms.image_encoder import image_encoder
 from algorithms.types import algorithms
 
@@ -35,9 +36,21 @@ def image_test():
 
             processed_image = None
 
+            print(request.args.get("algoType"))
+
             match request.args.get("algoType"):
                 case algorithms.EdgeDetection:
-                    processed_image = edge_detection(img)
+                    threshold1 = request.args.get("threshold1")
+                    threshold2 = request.args.get("threshold2")
+                    processed_image = edge_detection(img,int(threshold1), int(threshold2))
+                case algorithms.Dilation:
+                    kernel1 = request.args.get("kernel1")
+                    kernel2 = request.args.get("kernel2")
+                    processed_image = dilation(img, int(kernel1), int(kernel2)) 
+                case algorithms.Erosion:
+                    kernel1 = request.args.get("kernel1")
+                    kernel2 = request.args.get("kernel2")
+                    processed_image = erosion(img, int(kernel1), int(kernel2)) 
                 case _:
                     processed_image = edge_detection(img)
 

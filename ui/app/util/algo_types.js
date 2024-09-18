@@ -1,7 +1,7 @@
 const algorithm = {
   "EdgeDetection": "edge_detection",
   "Erosion": "erosion",
-  "Dilation": "dialation",
+  "Dilation": "dilation",
   "FourierTransform": "fourier_transform",
   "GaussianFilter": "gaussian_filter",
   "HistogramEqualization": "histogram_equalization",
