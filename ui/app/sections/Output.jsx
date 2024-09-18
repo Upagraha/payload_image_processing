@@ -6,8 +6,10 @@ import { Card, CardTitle } from "@nyxui/card";
 import { Image, Alert } from 'antd'
 import { Input } from "@nyxui/input";
 import { Label } from "@nyxui/label";
+import { useToast } from "@nyxui/use-toast";
 
 export default function Output({ image, backendUrl }) {
+  const { toast } = useToast()
   const [outputImageUrl, setOutputImageUrl] = useState();
   const [edgeDetectionParams, setEdgeDetectionParams] = useState({
     threshold1: 100,
@@ -35,12 +37,20 @@ export default function Output({ image, backendUrl }) {
     formData.append('file', image);
 
     try {
+      toast({
+        title: "  Request sent to Server Succesffully",
+        description: "Response from server should take a while."
+      })
       await fetch(`${backendUrl}?algoType=${algoType}${params}`, {
         method: 'POST',
         body: formData,
       })
         .then((res) => res.json())
         .then((data) => {
+          toast({
+            title: "󰄴 Response from Server Received",
+            description: "Processed Image will be rendered."
+          })
           if (data.image) {
             setOutputImageUrl(
               `data:image/jpg;base64,${data.image}`
@@ -48,6 +58,10 @@ export default function Output({ image, backendUrl }) {
           }
         })
         .catch((err) => {
+          toast({
+            title: " Error Occured",
+            description: `Error: ${err}`
+          })
           console.log(err)
         })
 
