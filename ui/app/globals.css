@@ -3,13 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  @font-face {
-    font-family: "JetBrainsMono";
-    src: url("./fonts/jetbrainsmono.ttf") format('truetype');
-  }
-}
-
-@layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -43,7 +36,7 @@
   }
 
   .dark {
-    --background: 0 0% 100%;
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
     --card: 240 10% 3.9%;
@@ -79,14 +72,10 @@
   }
 
   body {
-    @apply text-white bg-black;
+    @apply bg-background text-foreground;
   }
-}
 
-* {
-  font-family: JetBrainsMono;
-}
-
-.h3 {
-  @apply text-xl font-normal;
+  .tab_content {
+    @apply flex flex-col items-center gap-4 m-2;
+  }
 }
