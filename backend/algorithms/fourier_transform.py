@@ -1,8 +1,7 @@
 import cv2
 import numpy as np
  
-def fourier_transform(image_to_be_prcsd):
-    image = cv2.imread(image_to_be_prcsd)
+def fourier_transform(image):
     
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     

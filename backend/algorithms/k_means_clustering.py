@@ -1,12 +1,11 @@
 import numpy as np
 import cv2
  
-def k_means_clustering(image):
+def k_means_clustering(img, clusters=3):
 # Read in the image
-    image = cv2.imread(image)
     
 # Change color to RGB (from BGR)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
 
 
 # Reshaping the image into a 2D array of pixels and (RGB) values
@@ -21,8 +20,7 @@ def k_means_clustering(image):
     
 #perform k-means clustering with number of clusters defined as 3
 #also random centers are initially chosen for k-means clustering
-    k = 3
-    retval, labels, centers = cv2.kmeans(pixel_vals, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+    retval, labels, centers = cv2.kmeans(pixel_vals, clusters, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
     
 # convert data into 8-bit values
     centers = np.uint8(centers)

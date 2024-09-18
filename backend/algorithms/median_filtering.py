@@ -1,14 +1,12 @@
 from PIL import Image, ImageFilter
 
-def median_filter(image):
-    image = Image.open(image)  
-    prcsd_image = image.filter(ImageFilter.MedianFilter(size=3))
+def median_filter(image, size=3):
+    prcsd_image = image.filter(ImageFilter.MedianFilter(size=size))
     return prcsd_image
 
 
-def mode_filter(image):
-    image = Image.open(r"IMAGE_PATH")  
-    prcsd_image = image.filter(ImageFilter.ModeFilter(size=3))
+def mode_filter(image, size=3):
+    prcsd_image = image.filter(ImageFilter.ModeFilter(size=size))
     return prcsd_image
 
 

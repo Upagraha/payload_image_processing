@@ -4,8 +4,14 @@ import numpy as np
 import cv2
 from algorithms.edge_detection import edge_detection
 from algorithms.erosion_and_dilation import dilation, erosion
-from algorithms.image_encoder import image_encoder
+from algorithms.fourier_transform import fourier_transform
+from algorithms.gaussian_filter import gaussian_entire_image
+from algorithms.histogram_equalization import histogram_equalization
+from algorithms.k_means_clustering import k_means_clustering
+from algorithms.median_filtering import mode_filter, median_filter
+from algorithms.image_encoder import image_encoder, image_encoder_pillow
 from algorithms.types import algorithms
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -31,6 +37,8 @@ def image_test():
             in_memory_file = file.read()
             nparr = np.frombuffer(in_memory_file, np.uint8)
             img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB for Pillow
+            pillow_image = Image.fromarray(img_rgb)
             if img is None:
                 return jsonify({'error': 'Unable to decode image'}), 400
 
@@ -51,13 +59,34 @@ def image_test():
                     kernel1 = request.args.get("kernel1")
                     kernel2 = request.args.get("kernel2")
                     processed_image = erosion(img, int(kernel1), int(kernel2)) 
+                case algorithms.FourierTransform:
+                    processed_image = fourier_transform(img)
+                case algorithms.GaussianFilter:
+                    processed_image = gaussian_entire_image(img)
+                case algorithms.HistogramEqualization:
+                    processed_image = histogram_equalization(img)
+                case algorithms.KMeansClustering:
+                    clusters = request.args.get("clusters")
+                    processed_image = k_means_clustering(img, int(clusters))
+                case algorithms.MedianFiltering:
+                    size = request.args.get("size")
+                    match request.args.get("filterType"):
+                        case "median":
+                            processed_image = median_filter(pillow_image, int(size))
+                            encoded_image = image_encoder_pillow(processed_image)
+                            return jsonify({'message': 'Image Processed Successfully', 'image': encoded_image}), 200
+                        case _:
+                            processed_image = mode_filter(pillow_image, int(size))
+                            encoded_image = image_encoder_pillow(processed_image)
+                            return jsonify({'message': 'Image Processed Successfully', 'image': encoded_image}), 200
                 case _:
                     processed_image = edge_detection(img)
 
             encoded_image = image_encoder(processed_image)
             return jsonify({'message': 'Image Processed Successfully', 'image': encoded_image}), 200
     except Exception as e:
-        return jsonify({"error:" f"{e}"}), 400
+        print("ERROR: ", e)
+        return jsonify({"error:"}), 400
 
     
 
