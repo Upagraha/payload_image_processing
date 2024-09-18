@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@nyxui/tabs";
 import algorithm from "@/utils/algo_types";
 import { useState } from "react";
 import { Card, CardTitle } from "@nyxui/card";
-import { Image } from 'antd'
+import { Image, Alert } from 'antd'
 import { Input } from "@nyxui/input";
 import { Label } from "@nyxui/label";
 
@@ -21,8 +21,14 @@ export default function Output({ image, backendUrl }) {
     kernel1: 5,
     kernel2: 5
   })
+  const [kMeansClusteringParams, setKMeansClusteringParams] = useState({
+    clusters: 3
+  })
+  const [medianFilteringParams, setMedianFilteringParams] = useState({
+    size: 3
+  })
 
-  const uploadImage = async (algoType, params) => {
+  const uploadImage = async (algoType, params = "") => {
     if (!image) return; // Exit if no image selected
 
     const formData = new FormData();
@@ -60,10 +66,14 @@ export default function Output({ image, backendUrl }) {
       </Card>
     }
       <Tabs defaultValue="edge_detection">
-        <TabsList className="dark flex justify-center">
+        <TabsList className="dark justify-center">
           <TabsTrigger value="edge_detection">Edge Detection</TabsTrigger>
           <TabsTrigger value="erosion">Erosion</TabsTrigger>
           <TabsTrigger value="dilation">Dilation</TabsTrigger>
+          <TabsTrigger value="fourier_transform">Fourier Transform</TabsTrigger>
+          {/* <TabsTrigger value="histogram_equalization">Histogram Equalization</TabsTrigger> */}
+          <TabsTrigger value="k_means_clustering">K Means Clustering</TabsTrigger>
+          <TabsTrigger value="median_filtering">Median Filtering</TabsTrigger>
         </TabsList>
         <TabsContent value="edge_detection" className="flex flex-col items-center mt-3 gap-3">
           <div>
@@ -144,6 +154,79 @@ export default function Output({ image, backendUrl }) {
             const params = `&kernel1=${dilationParams.kernel1}&kernel2=${dilationParams.kernel2}`
             uploadImage(algorithm.Dilation, params)
           }}>Process Image</Button>
+        </TabsContent>
+        <TabsContent value="fourier_transform" className="flex flex-col items-center">
+          <Button onClick={() => {
+            uploadImage(algorithm.FourierTransform)
+          }}>Process Image</Button>
+        </TabsContent>
+        {/* Not working */}
+        {/* <TabsContent value="histogram_equalization" className="relative bottom-4 flex flex-col items-center"> */}
+        {/*   <Button onClick={() => { */}
+        {/*     uploadImage(algorithm.HistogramEqualization) */}
+        {/*   }}>Process Image</Button> */}
+        {/* </TabsContent> */}
+        <TabsContent value="k_means_clustering" className="relative bottom-10 flex flex-col items-center gap-4">
+          <p className="mt-2 border-2 rounded-lg p-3 bg-red-700">Cluster Num Above 4 is not allowed due to heavy computation</p>
+          <div>
+            <Label>Num of Clusters</Label>
+            <Input placeholder="3" onChange={(e) => {
+              if (e.target.value > 4) {
+                setKMeansClusteringParams({
+                  ...kMeansClusteringParams,
+                  clusters: 4
+                })
+              } else {
+                setKMeansClusteringParams({
+                  ...kMeansClusteringParams,
+                  clusters: e.target.value
+                })
+              }
+            }} />
+          </div>
+          <Button onClick={() => {
+            const params = `&clusters=${kMeansClusteringParams.clusters}`
+            uploadImage(algorithm.KMeansClustering, params)
+          }}>Process Image</Button>
+        </TabsContent>
+        <TabsContent value="median_filtering" className="flex flex-col items-center relative bottom-10">
+          <p className="m-2 border-2 rounded-lg p-3 bg-red-700">Median Filtering is a heavy computation task. Try using smaller values</p>
+          <Tabs>
+            <TabsList defaultValue="median">
+              <TabsTrigger value="median">Median</TabsTrigger>
+              <TabsTrigger value="mode">Mode</TabsTrigger>
+            </TabsList>
+            <TabsContent value="median" className="flex flex-col items-center gap-3">
+              <div>
+                <Label>Size</Label>
+                <Input placeholder="3" onChange={(e) => {
+                  setMedianFilteringParams({
+                    ...medianFilteringParams,
+                    size: e.target.value
+                  })
+                }} />
+              </div>
+              <Button onClick={() => {
+                const params = `&size=${medianFilteringParams.size}&filterType=median`
+                uploadImage(algorithm.MedianFiltering, params)
+              }}>Process Image</Button>
+            </TabsContent>
+            <TabsContent value="mode" className="flex flex-col items-center gap-3">
+              <div>
+                <Label>Size</Label>
+                <Input placeholder="3" onChange={(e) => {
+                  setMedianFilteringParams({
+                    ...medianFilteringParams,
+                    size: e.target.value
+                  })
+                }} />
+              </div>
+              <Button onClick={() => {
+                const params = `&size=${medianFilteringParams.size}&filterType=mode`
+                uploadImage(algorithm.MedianFiltering, params)
+              }}>Process Image</Button>
+            </TabsContent>
+          </Tabs>
         </TabsContent>
       </Tabs>
     </div>
