@@ -1,0 +1,6 @@
+Flask
+Flask_Cors
+numpy
+opencv-python
+Pillow
+gunicorn
