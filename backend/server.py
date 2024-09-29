@@ -22,6 +22,13 @@ def health_check():
         "message": "OK"
     })
 
+@app.route("/check", methods=['GET'])
+def health_check():
+    return jsonify({
+        "New Server Route": "Created Successfully"
+    })
+
+
 @app.route('/', methods=['POST'])
 def image_test():
     try: 
